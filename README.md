@@ -75,6 +75,16 @@ sudo dd bs=4M if=raspstretch.img of=/dev/sdb status=progress conf=fsync
 (/dev/sdb should be the flash drive inserted in workstation)
 (raspstretch.img is up to date image from internet)
 
+#Create f2fs video partition
+sudo gparted
+Modify root fs so that there is empty space after it
+If gparted does not allow operation, incrementally modify by 1GB
+
+sudo apt-get install f2fs-tools
+sudo mkfs.f2fs -l videofs /dev/sdb3
+
+
+
 Use credentials user:pi pass:raspberry to login to installed system
 
 sudo raspi-config
@@ -97,6 +107,13 @@ ssh pi@{ipaddress}
 go to /etc/apt/sources.list add line
 deb http://reflection.oss.ou.edu/raspbian/raspbian/ stretch main contrib non-free rpi
 comment all others out
+
+#Add f2fs video partition to file partition table
+sudo mkdir /mnt/vid
+
+sudo blkid
+copy information from blkid for videofs into /etc/fstab:
+PARTUUID=7e3a6175-03  /mnt/vid  f2fs            defaults,noatime        0       1
 
 #INSTALL NGINX
 
@@ -182,3 +199,6 @@ follow directions for React Native to use with Expo
 
 
 Install handbrake
+
+
+
